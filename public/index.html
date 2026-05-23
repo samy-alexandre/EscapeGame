@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="description" content="Aurora-7 — escape game coopératif en temps réel." />
+  <meta name="theme-color" content="#0a0e1a" />
+  <title>AURORA-7 · Escape Coop</title>
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Major+Mono+Display&family=Space+Mono:wght@400;700&family=Cormorant+Garamond:wght@400;500;600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <!-- Décor de fond persistant -->
+  <div class="bg-grain"></div>
+  <div class="bg-scanlines"></div>
+  <div class="bg-glow"></div>
+
+  <!-- ÉCRAN : MENU PRINCIPAL -->
+  <section id="screen-menu" class="screen active">
+    <div class="menu-shell">
+      <header class="title-block">
+        <div class="eyebrow">SECTEUR&nbsp;47 · ANOMALIE&nbsp;DÉTECTÉE</div>
+        <h1 class="game-title">AURORA<span class="dash">—</span>7</h1>
+        <p class="tagline">Une station à la dérive.<br/>Vingt minutes d'oxygène.<br/>Pas de second essai.</p>
+      </header>
+
+      <div class="menu-card">
+        <label class="field">
+          <span>Pseudo</span>
+          <input id="input-name" type="text" maxlength="20" autocomplete="off" placeholder="Votre nom de code" />
+        </label>
+
+        <div class="menu-actions">
+          <button id="btn-create" class="btn btn-primary" type="button">
+            <span class="btn-label">Créer une salle</span>
+            <span class="btn-sub">Vous serez l'hôte</span>
+          </button>
+
+          <div class="divider"><span>OU</span></div>
+
+          <div class="join-row">
+            <label class="field field-inline">
+              <span>Code</span>
+              <input id="input-code" type="text" maxlength="6" autocomplete="off" placeholder="ABCD" />
+            </label>
+            <button id="btn-join" class="btn btn-secondary" type="button">Rejoindre</button>
+          </div>
+        </div>
+
+        <p id="menu-error" class="menu-error" aria-live="polite"></p>
+      </div>
+
+      <footer class="menu-foot">
+        <span class="conn-dot" id="conn-dot" aria-hidden="true"></span>
+        <span id="conn-text">Connexion…</span>
+      </footer>
+    </div>
+  </section>
+
+  <!-- ÉCRAN : LOBBY -->
+  <section id="screen-lobby" class="screen">
+    <div class="lobby-shell">
+      <header class="lobby-head">
+        <div class="room-code-block">
+          <span class="lobby-label">Code de salle</span>
+          <button id="room-code" class="room-code" title="Cliquer pour copier">----</button>
+          <span class="copied-toast" id="copied-toast">Copié&nbsp;!</span>
+        </div>
+        <button id="btn-leave" class="btn btn-ghost" type="button">Quitter</button>
+      </header>
+
+      <div class="lobby-body">
+        <div class="lobby-card">
+          <h2 class="section-title">Équipage</h2>
+          <ul id="player-list" class="player-list"></ul>
+          <p class="hint">2 à 4 joueurs · au moins 2 pour démarrer</p>
+        </div>
+
+        <div class="lobby-card lobby-brief">
+          <h2 class="section-title">Mission</h2>
+          <p>La station Aurora-7 perd ses systèmes vitaux. Vous devez traverser <strong>trois salles</strong>, résoudre <strong>trois énigmes coopératives</strong> et atteindre la capsule de secours en moins de 20 minutes.</p>
+          <ul class="brief-list">
+            <li>Chaque énigme demande deux rôles différents.</li>
+            <li>Utilisez le chat pour communiquer ce que vous voyez.</li>
+            <li>Si quelqu'un se déconnecte, il peut revenir avec le même pseudo.</li>
+          </ul>
+          <button id="btn-start" class="btn btn-primary btn-large" type="button" disabled>
+            <span class="btn-label">Lancer la partie</span>
+          </button>
+          <p id="start-hint" class="start-hint"></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ÉCRAN : JEU -->
+  <section id="screen-game" class="screen">
+    <header class="game-hud">
+      <div class="hud-left">
+        <div class="room-progress">
+          <span id="room-progress-text">Salle 1 / 3</span>
+          <div class="progress-dots" id="progress-dots"></div>
+        </div>
+      </div>
+      <div class="hud-center">
+        <div class="timer" id="timer">--:--</div>
+      </div>
+      <div class="hud-right">
+        <button id="btn-chat-toggle" class="btn btn-ghost" type="button" aria-label="Chat">
+          💬 <span id="chat-badge" class="chat-badge" hidden>0</span>
+        </button>
+      </div>
+    </header>
+
+    <div class="game-body">
+      <div class="room-intro" id="room-intro"></div>
+      <div id="puzzle-container" class="puzzle-container"></div>
+    </div>
+
+    <!-- Panneau de chat coulissant -->
+    <aside id="chat-panel" class="chat-panel" aria-hidden="true">
+      <header class="chat-head">
+        <h3>Communications</h3>
+        <button id="chat-close" class="btn btn-ghost" type="button" aria-label="Fermer">✕</button>
+      </header>
+      <div id="chat-log" class="chat-log"></div>
+      <form id="chat-form" class="chat-form">
+        <input id="chat-input" type="text" maxlength="200" placeholder="Message à l'équipage…" autocomplete="off" />
+        <button class="btn btn-secondary" type="submit">Envoyer</button>
+      </form>
+    </aside>
+  </section>
+
+  <!-- ÉCRAN : FIN DE PARTIE -->
+  <section id="screen-end" class="screen">
+    <div class="end-shell">
+      <div id="end-card" class="end-card">
+        <div class="end-eyebrow" id="end-eyebrow">TRANSMISSION FINALE</div>
+        <h2 id="end-title" class="end-title">—</h2>
+        <p id="end-text" class="end-text">—</p>
+        <div class="end-actions">
+          <button id="btn-replay" class="btn btn-primary" type="button" hidden>Rejouer</button>
+          <button id="btn-end-leave" class="btn btn-ghost" type="button">Retour menu</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Toast de notification -->
+  <div id="toast" class="toast" aria-live="polite"></div>
+
+  <!-- Socket.IO client (servi par le serveur Node) -->
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/audio.js"></script>
+  <script src="/js/network.js"></script>
+  <script src="/js/ui.js"></script>
+  <script src="/js/puzzles.js"></script>
+  <script src="/js/main.js"></script>
+</body>
+</html>
