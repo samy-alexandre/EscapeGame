@@ -1,0 +1,24 @@
+{
+  "name": "escape-aurora",
+  "version": "1.0.0",
+  "description": "Aurora-7 — un escape game coopératif multijoueur en temps réel jouable dans le navigateur.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "test": "node test-integration.js"
+  },
+  "keywords": ["escape-game", "multiplayer", "coop", "socket.io", "game"],
+  "author": "",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "socket.io": "^4.7.5"
+  },
+  "devDependencies": {
+    "socket.io-client": "^4.7.5"
+  }
+}
